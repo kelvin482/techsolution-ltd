@@ -60,4 +60,4 @@ This project requires the following dependencies:
      '''''''npm start
      '''''''pytest
 
-Feel free to copy and paste this code into your GitHub README!
+Feel free contribute!
