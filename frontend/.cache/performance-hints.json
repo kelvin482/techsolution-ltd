@@ -1,0 +1,12 @@
+{
+  "memoize": [
+    "CardContent",
+    "HeroSection",
+    "TestimonialsSection",
+    "Footer"
+  ],
+  "lazyLoad": [
+    "TestimonialsSection",
+    "Footer"
+  ]
+}

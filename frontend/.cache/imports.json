@@ -1,0 +1,6 @@
+[
+  "react",
+  "next/router",
+  "lucide-react",
+  "@radix-ui/react-*"
+]
