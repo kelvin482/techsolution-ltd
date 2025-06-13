@@ -49,11 +49,28 @@ export default function RegisterPage() {
 
     setIsLoading(true)
 
-    // Simulate registration process
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    // Redirect to home page after successful registration
-    router.push("/")
+    try {
+      const res = await fetch("http://localhost:8000/api/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      })
+      setIsLoading(false)
+      if (res.ok) {
+        router.push("/auth/login")
+      } else {
+        const data = await res.json()
+        alert(data.error || "Registration failed")
+      }
+    } catch (err) {
+      setIsLoading(false)
+      alert("Registration failed. Please try again.")
+    }
   }
 
   return (

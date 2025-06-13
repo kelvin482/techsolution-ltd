@@ -12,6 +12,7 @@ import { Shield, Eye, EyeOff, Users, Headphones, Settings } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Footer } from "../../../components/footer"
+import { useAuth } from "../../../contexts/AuthContext"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -20,24 +21,31 @@ export default function LoginPage() {
   const [role, setRole] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { login } = useAuth()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
-
-    // Simulate login process
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Redirect based on role
-    if (role === "admin") {
-      router.push("/admin/dashboard")
-    } else if (role === "staff") {
-      router.push("/staff/dashboard")
-    } else if (role === "client") {
-      router.push("/client/dashboard")
-    } else {
-      // Default redirect if no role selected
-      router.push("/")
+    try {
+      const res = await fetch("http://localhost:8000/api/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      })
+      setIsLoading(false)
+      const data = await res.json()
+      if (res.ok) {
+        localStorage.setItem("token", data.token)
+        login({ name: data.name, email: data.email, role: data.role })
+        if (data.role === "admin") router.push("/admin/dashboard")
+        else if (data.role === "staff") router.push("/staff/dashboard")
+        else router.push("/dashboard")
+      } else {
+        alert(data.error || "Login failed")
+      }
+    } catch (err) {
+      setIsLoading(false)
+      alert("Login failed. Please try again.")
     }
   }
 

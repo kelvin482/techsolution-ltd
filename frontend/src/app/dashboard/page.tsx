@@ -1,3 +1,7 @@
+"use client"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAuth } from "../../contexts/AuthContext"
 import { Button } from "../../components/ui/button"
 import { Users, Clock, CheckCircle, Bot } from "lucide-react"
 import Link from "next/link"
@@ -6,6 +10,15 @@ import { SiteHeader } from "../../components/ui/site-header"
 import { MOCK_TICKETS } from "../../lib/data"
 
 export default function DashboardPage() {
+  const { user } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!user || user.role !== "client") {
+      router.replace("/auth/login")
+    }
+  }, [user, router])
+
   const dashboardStats = [
     { label: "Open Tickets", value: "3", change: "+1 from yesterday", icon: Clock, color: "blue" },
     { label: "Resolved", value: "12", change: "+3 this week", icon: CheckCircle, color: "green" },
@@ -54,7 +67,7 @@ export default function DashboardPage() {
               <div className="p-6">
                 {/* Welcome Section */}
                 <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                  <h2 className="text-lg font-semibold text-blue-900 mb-2">Welcome back, John!</h2>
+                  <h2 className="text-lg font-semibold text-blue-900 mb-2">Welcome back, {user?.name}!</h2>
                   <p className="text-blue-700">You have 2 active tickets and 1 pending response.</p>
                 </div>
 
